@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace topic_4_monogame_sounds
 {
@@ -22,9 +23,13 @@ namespace topic_4_monogame_sounds
         SpriteFont Timefont;
         float seconds;
 
+
+
         Rectangle greenRect, greenRect2, redRect, redRect2, redRect3;
 
         SoundEffect explosionSound;
+        SoundEffect cheeringSound;
+        SoundEffectInstance cheeringInstance;
         SoundEffectInstance explodeInstance;
 
 
@@ -32,6 +37,7 @@ namespace topic_4_monogame_sounds
 
         bool done;
         bool sound;
+        bool cheer;
 
         public Game1()
         {
@@ -64,6 +70,7 @@ namespace topic_4_monogame_sounds
 
             done = false;
             sound = false;
+            cheer = false;
 
             seconds = 15;
         }
@@ -82,14 +89,17 @@ namespace topic_4_monogame_sounds
 
 
             explosionSound = Content.Load<SoundEffect>("explosion");
+            cheeringSound = Content.Load<SoundEffect>("cheering");
             explosionTexture = Content.Load<Texture2D>("explosionImage");
 
 
             explodeInstance = explosionSound.CreateInstance();
+            cheeringInstance = cheeringSound.CreateInstance();
         }
 
         protected override void Update(GameTime gameTime)
         {
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -115,22 +125,14 @@ namespace topic_4_monogame_sounds
                     Exit();
             }
 
-            if (mouseState.LeftButton == ButtonState.Pressed)
-            {
-                if (greenRect.Contains(mouseState.Position))
-                    done = true;
-
-            }
+            if (cheer)
+                if(cheeringInstance.State == SoundState.Stopped)
+                    Exit();
+                
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                if (greenRect2.Contains(mouseState.Position))
-                    done = true;
 
-            }
-
-            if (mouseState.LeftButton == ButtonState.Pressed)
-            {
                 if (redRect.Contains(mouseState.Position))
                 {
                     seconds = 0;
@@ -138,10 +140,7 @@ namespace topic_4_monogame_sounds
                     done = true;
                     sound = true;
                 }
-            }
-
-            if (mouseState.LeftButton == ButtonState.Pressed)
-            {
+                
                 if (redRect2.Contains(mouseState.Position))
                 {
                     seconds = 0;
@@ -149,10 +148,6 @@ namespace topic_4_monogame_sounds
                     done = true;
                     sound = true;
                 }
-            }
-
-            if (mouseState.LeftButton == ButtonState.Pressed)
-            {
                 if (redRect3.Contains(mouseState.Position))
                 {
                     seconds = 0;
@@ -160,9 +155,23 @@ namespace topic_4_monogame_sounds
                     done = true;
                     sound = true;
                 }
+
+                if (greenRect.Contains(mouseState.Position))
+                {
+                    done = true;
+                    cheeringInstance.Play();
+                    cheer = true;
+                }
+
+
+                if (greenRect2.Contains(mouseState.Position))
+                {
+                    done = true;
+                    cheeringInstance.Play();
+                    cheer = true;
+                }
+
             }
-
-
             base.Update(gameTime);
         }
 
